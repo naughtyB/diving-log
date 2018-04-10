@@ -132,21 +132,6 @@ export class AppContentReleaseLogFirstStep extends React.Component{
     this.setState(state)
   }
 
-  componentWillMount() {
-    if(navigator.geolocation){
-      navigator.geolocation.getCurrentPosition((position) => {
-        this.props.onChangeCenter({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        })
-        this.props.onChangeMarker({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        })
-      })
-    }
-  }
-
   onMapClick(position){
     this.props.onChangeMarker({
       lat: position.latLng.lat(),

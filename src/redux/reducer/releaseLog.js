@@ -3,16 +3,22 @@ import {
   CHANGE_CENTER,
   CHANGE_STEP,
   CHANGE_BASIC_FIELDS,
-  CHANGE_DETAIL_RECORD
+  CHANGE_DETAIL_RECORD,
+  ADD_LOG_REQUEST_POST,
+  ADD_LOG_RECEIVE_SUCCESS_POST,
+  ADD_LOG_RECEIVE_ERROR_POST
 } from '../action/releaseLog'
 
 const initialReleaseLog = {
   markers: null,
   center: null,
-  step: 2,
+  step: 0,
   basicFields: {
     date: {
       value: null
+    },
+    title: {
+      value: ''
     },
     timeIn: {
       value: null
@@ -32,7 +38,7 @@ const initialReleaseLog = {
     end: {
       value: ''
     },
-    visiblity: {
+    visibility: {
       value: ''
     },
     nitrox: {
@@ -49,9 +55,13 @@ const initialReleaseLog = {
     },
     camera: {
       value: ''
+    },
+    isSecret: {
+      value: ''
     }
   },
-  detailRecord: ''
+  detailRecord: '',
+  isAddingLog: false
 }
 
 export const releaseLog = (state = initialReleaseLog, action) => {
@@ -66,6 +76,12 @@ export const releaseLog = (state = initialReleaseLog, action) => {
       return {...state, basicFields: {...state.basicFields, ...action.fieldsChanged}};
     case CHANGE_DETAIL_RECORD:
       return {...state, detailRecord: action.detailRecord}
+    case ADD_LOG_REQUEST_POST:
+      return {...state, isAddingLog: true};
+    case ADD_LOG_RECEIVE_SUCCESS_POST:
+      return {...state, isAddingLog: false};
+    case ADD_LOG_RECEIVE_ERROR_POST:
+      return {...state, isAddingLog: false};
     default:
       return state;
   }

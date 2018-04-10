@@ -1,0 +1,22 @@
+.app-content-logDetail .ant-avatar-lg{
+  width: 45px;
+  height: 45px;
+  line-height: 45px;
+  border-radius: 50%;
+}
+
+.app-content-logDetail .isPraised:hover{
+  background-color: rgba(250, 108, 141, 0.2)
+}
+
+.app-content-logDetail .anticon-heart{
+  color: #CCC;
+}
+
+.app-content-logDetail .isPraised:hover .anticon-heart{
+  color: rgb(250, 108, 141)
+}
+
+.app-content-logDetail .reply:hover{
+  background-color: rgba(34, 34, 34, 0.2)
+}

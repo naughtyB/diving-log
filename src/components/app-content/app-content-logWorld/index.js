@@ -4,7 +4,9 @@ import { message } from 'antd';
 import { compose, withProps, lifecycle } from "recompose"
 import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-maps"
 import { SearchBox } from 'react-google-maps/lib/components/places/SearchBox';
+import { InfoBox } from "react-google-maps/lib/components/addons/InfoBox";
 import { MarkerClusterer } from 'react-google-maps/lib/components/addons/MarkerClusterer';
+import fetch from 'isomorphic-fetch'
 
 const MyMapComponent = compose(
   withProps({
@@ -116,12 +118,44 @@ const MyMapComponent = compose(
           enableRetinaIcons
           gridSize={60}
         >
-          {props.logMarkers.map((marker, index) => (
+          {props.logMarkers.length > 0 && props.logMarkers.map((logMarker, index) => (
             <Marker
               key={index}
+              onMouseOver={(e)=>{
+                props.onMarkMouseOver(index);
+                console.log(e)
+              }}
+              onMouseOut={()=>props.onMarkMouseOut()}
               icon={{url: "http://localhost:8000/public/image/logPosition.png", size: {width: 35, height: 50}, scaledSize: {width: 35, height: 50}}}
-              position={{ lat: marker.lat, lng: marker.lng }}
-            />
+              position={{ lat: Number(logMarker.marker.lat), lng: Number(logMarker.marker.lng) }}
+            >
+              {
+                props.visibleIndex === index && (
+                  <InfoBox
+                    visible={props.visibleIndex === index ? true : false}
+                    options={{ closeBoxURL: ``, enableEventPropagation: true }}
+                  >
+                    <div style={{ backgroundColor: 'rgba(0,0,0,0.75)', padding: `12px`, borderRadius: '5px', minWidth: '200px'}}>
+                      <div style={{ fontSize: `16px`, color: `white`}}>
+                        主题：{logMarker.title}
+                      </div>
+                      <div style={{ fontSize: `16px`, color: `white`}}>
+                        时间：{logMarker.date}
+                      </div>
+                      <div style={{ fontSize: `16px`, color: `white`}}>
+                        地点：{logMarker.location}
+                      </div>
+                      <div style={{ fontSize: `16px`, color: `white`}}>
+                        潜点：{logMarker.diveSite}
+                      </div>
+                      <div style={{ fontSize: `16px`, color: `white`}}>
+                        潜水人：{logMarker.user.name}
+                      </div>
+                    </div>
+                  </InfoBox>
+                )
+              }
+            </Marker>
           ))}
         </MarkerClusterer>
       </GoogleMap>
@@ -136,30 +170,22 @@ export class AppContentLogWorld extends React.Component{
       center: {
         lat: 41.9, lng: -87.624
       },
-      logMarkers: [
-        {
-          lat: 23.061056232081317,
-          lng: 113.39199542999268
-        },
-        {
-          lat: 23.062300031910365,
-          lng: 113.3893346786499
-        },
-        {
-          lat: 23.061835858904512,
-          lng: 113.38983664515172
-        }
-      ],
-      bounds: null
+      logMarkers: [],
+      bounds: null,
+      visibleIndex: -1
     }
     this.onMarkMouseOver = this.onMarkMouseOver.bind(this);
     this.onChangeParentState = this.onChangeParentState.bind(this);
     this.onMapClick = this.onMapClick.bind(this);
+    this.onMarkMouseOver = this.onMarkMouseOver.bind(this);
+    this.onMarkMouseOut = this.onMarkMouseOut.bind(this);
   }
   onChangeParentState(state){
     this.setState(state)
   }
+
   componentWillMount() {
+    console.log(2)
     if(navigator.geolocation){
       navigator.geolocation.getCurrentPosition((position) => {
         this.setState({
@@ -170,10 +196,35 @@ export class AppContentLogWorld extends React.Component{
         })
       })
     }
+    return fetch('/server/log/getAll', {
+      method: 'post',
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded'
+      },
+      credentials: 'include'
+    }).then(res => {
+      return res.json()
+    }).then(res => {
+      if(!res.err){
+        this.setState(() => {
+          return {
+            logMarkers: res.logs
+          }
+        })
+      }
+    })
   }
 
-  onMarkMouseOver(){
-    message.info('asd')
+  onMarkMouseOver(index){
+    this.setState({
+      visibleIndex: index
+    })
+  }
+
+  onMarkMouseOut(){
+    this.setState({
+      visibleIndex: -1
+    })
   }
 
   onMapClick(a){
@@ -185,6 +236,8 @@ export class AppContentLogWorld extends React.Component{
     return (
       <MyMapComponent
         onMarkMouseOver={this.onMarkMouseOver}
+        onMarkMouseOut={this.onMarkMouseOut}
+        visibleIndex={this.state.visibleIndex}
         center={this.state.center}
         onChangeParentState={this.onChangeParentState}
         onMapClick={this.onMapClick}

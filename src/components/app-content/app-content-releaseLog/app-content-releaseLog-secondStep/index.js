@@ -27,7 +27,7 @@ export class AppContentReleaseLogSecondStep extends React.Component{
     this.props.onChangeStep(0);
   }
   handleNext(){
-    this.props.form.validateFields(["date", "timeIn", "timeOut", "location", "diveSite", "start", "end", "visibility", "nitrox", "airTemperature", "bottomTemperature", "weight", "camera"],(errors,values)=>{
+    this.props.form.validateFields(["date", "title", "timeIn", "timeOut", "location", "diveSite", "start", "end", "visibility", "nitrox", "airTemperature", "bottomTemperature", "weight", "camera", "isSecret"],(errors,values)=>{
       if(!errors){
         this.props.onChangeStep(2);
       }
@@ -49,6 +49,17 @@ export class AppContentReleaseLogSecondStep extends React.Component{
                     ]
                   })(
                     <DatePicker/>
+                  )}
+                </FormItem>
+              </Col>
+              <Col span={12}>
+                <FormItem {...formItemLayout} label="主题">
+                  {getFieldDecorator('title',{
+                    rules: [
+                      {required: true, message: '请填写主题'}
+                    ]
+                  })(
+                    <Input type="text"/>
                   )}
                 </FormItem>
               </Col>
@@ -128,7 +139,7 @@ export class AppContentReleaseLogSecondStep extends React.Component{
             <Row gutter={24}>
               <Col span={12}>
                 <FormItem {...formItemLayout} label="能见度">
-                  {getFieldDecorator('visiblity',{
+                  {getFieldDecorator('visibility',{
                     rules: [
                       {required: true, message: '请填写能见度'}
                     ]
@@ -202,6 +213,22 @@ export class AppContentReleaseLogSecondStep extends React.Component{
                 </FormItem>
               </Col>
             </Row>
+            <Row gutter={24}>
+              <Col span={12}>
+                <FormItem {...formItemLayout} label="是否公开">
+                  {getFieldDecorator('isSecret',{
+                    rules: [
+                      {required: true, message: '请选择相机'}
+                    ]
+                  })(
+                    <RadioGroup>
+                      <Radio value="common">公开</Radio>
+                      <Radio value="secret">私密</Radio>
+                    </RadioGroup>
+                  )}
+                </FormItem>
+              </Col>
+            </Row>
           </Form>
         </div>
         <div className="app-content-releaseLog-secondStep-action" style={{textAlign: 'right'}}>
@@ -222,6 +249,9 @@ const option = {
       date: Form.createFormField({
         ...props.basicFields.date
       }),
+      title: Form.createFormField({
+        ...props.basicFields.title
+      }),
       timeIn: Form.createFormField({
         ...props.basicFields.timeIn
       }),
@@ -240,8 +270,8 @@ const option = {
       end: Form.createFormField({
         ...props.basicFields.end
       }),
-      visiblity: Form.createFormField({
-        ...props.basicFields.visiblity
+      visibility: Form.createFormField({
+        ...props.basicFields.visibility
       }),
       nitrox: Form.createFormField({
         ...props.basicFields.nitrox
@@ -257,6 +287,9 @@ const option = {
       }),
       camera: Form.createFormField({
         ...props.basicFields.camera
+      }),
+      isSecret: Form.createFormField({
+        ...props.basicFields.isSecret
       })
     };
   }

@@ -83,10 +83,10 @@ export const doSubmitLogin = (username, password, successCallback) => (dispatch)
       dispatch(doSubmitLoginReceiveErrorPost(res.errorType, res.error))
     }
     else{
-      dispatch(doSubmitLoginReceiveSuccessPost(res.userData));
-      successCallback && successCallback();
       Cookies.set('username', res.userData['username']);
       Cookies.set('userId',res.userData['_id']);
+      dispatch(doSubmitLoginReceiveSuccessPost(res.userData));
+      successCallback && successCallback();
     }
   })
 }
@@ -132,10 +132,10 @@ export const doSubmitRegister = (username, password, name, securityQuestion, sec
     return res.json()
   }).then(res => {
     if(res.isSuccessful){
-      dispatch(doSubmitRegisterReceiveSuccessPost(res.userData));
-      successCallback && successCallback();
       Cookies.set('username', res.userData['username']);
       Cookies.set('userId',res.userData['_id']);
+      dispatch(doSubmitRegisterReceiveSuccessPost(res.userData));
+      successCallback && successCallback();
     }
     else{
       dispatch(doSubmitRegisterReceiveErrorPost(res.errorType, res.error))
@@ -183,10 +183,10 @@ export const doSubmitResetPassword = (username, password, securityQuestion, secu
     return res.json();
   }).then(res => {
     if(res.isSuccessful){
-      dispatch(doSubmitResetPasswordReceiveSuccessPost());
-      successCallback && successCallback();
       Cookies.set('username', res.userData['username']);
       Cookies.set('userId',res.userData['_id']);
+      dispatch(doSubmitResetPasswordReceiveSuccessPost());
+      successCallback && successCallback();
     }
     else{
       dispatch(doSubmitResetPasswordReceiveErrorPost(res.errorType, res.error));

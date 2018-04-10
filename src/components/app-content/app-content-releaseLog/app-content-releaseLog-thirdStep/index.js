@@ -1,8 +1,8 @@
 import React from 'react';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 import BraftEditor from 'braft-editor';
-import { doChangeDetailRecord, doChangeStep } from '../../../../redux/action/releaseLog';
-import moment from 'moment';
+import { withRouter } from 'react-router-dom';
+import { doChangeDetailRecord, doChangeStep, doAddLog } from '../../../../redux/action/releaseLog';
 import { connect } from 'react-redux';
 import 'braft-editor/dist/braft.css';
 import './index.css';
@@ -24,7 +24,37 @@ export class AppContentReleaseLogThirdStep extends React.Component{
     this.props.onChangeStep(1)
   }
   handleSubmit(){
-    console.log(this.props)
+    let basicFields = this.props.basicFields;
+    let json = {
+      date: basicFields.date.value.format('YYYY-MM-DD'),
+      timeIn: basicFields.timeIn.value.format('HH:mm:ss'),
+      timeOut: basicFields.timeOut.value.format('HH:mm:ss'),
+      location: basicFields.location.value,
+      diveSite: basicFields.diveSite.value,
+      start: basicFields.start.value,
+      end: basicFields.start.value,
+      visibility: basicFields.visibility.value,
+      nitrox: basicFields.visibility.value,
+      airTemperature: basicFields.airTemperature.value,
+      bottomTemperature: basicFields.bottomTemperature.value,
+      weight: basicFields.weight.value,
+      camera: basicFields.camera.value,
+      isSecret: basicFields.isSecret.value,
+      title: basicFields.title.value,
+      detail: this.props.detailRecord,
+      marker: this.props.marker
+    }
+    this.props.onAddLog(JSON.stringify(json), () => {
+      message.info('创建日志成功');
+      //wqdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+      this.props.history.push({
+        pathname: '/'
+      });
+    }, () => {
+      message.error('服务器发生错误 请重新提交')
+    }, () => {
+      message.warn('您未登录  请先登录')
+    })
   }
   render(){
     const editorProps = {
@@ -83,7 +113,7 @@ export class AppContentReleaseLogThirdStep extends React.Component{
         </div>
         <div className="app-content-releaseLog-thirdStep-action">
           <Button type="primary" onClick={this.handleBack} style={{marginRight: '10px'}}>上一步</Button>
-          <Button type="primary" onClick={this.handleSubmit}>创建</Button>
+          <Button type="primary" onClick={this.handleSubmit} loading={this.props.isAddingLog}>创建</Button>
         </div>
       </div> 
     )
@@ -92,15 +122,19 @@ export class AppContentReleaseLogThirdStep extends React.Component{
 
 const mapStateToProps = (state) => {
   return {
-    detailRecord: state.releaseLog.detailRecord
+    detailRecord: state.releaseLog.detailRecord,
+    basicFields: state.releaseLog.basicFields,
+    marker: state.releaseLog.marker,
+    isAddingLog: state.releaseLog.isAddingLog
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     onChangeDetailRecord: (detailRecord) => dispatch(doChangeDetailRecord(detailRecord)),
-    onChangeStep: (step) => dispatch(doChangeStep(step))
+    onChangeStep: (step) => dispatch(doChangeStep(step)),
+    onAddLog: (logData, successCallback, errorCallback, unloginCallback) => dispatch(doAddLog(logData, successCallback, errorCallback, unloginCallback))
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppContentReleaseLogThirdStep);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AppContentReleaseLogThirdStep));

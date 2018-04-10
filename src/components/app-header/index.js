@@ -2,6 +2,9 @@ import React from 'react';
 import { Menu, Button } from 'antd';
 import { withRouter } from 'react-router-dom'; 
 import { connect } from 'react-redux';
+import fetch from 'isomorphic-fetch';
+import Cookies from 'js-cookie'; 
+import { doChangeUserLoginState } from '../../redux/action/user'
 import './index.css';
 
 export class AppHeader extends React.Component{
@@ -19,6 +22,21 @@ export class AppHeader extends React.Component{
     })
   }
   componentDidMount(){
+    fetch('/server/autoLogin', {
+      method: 'post',
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded'
+      },
+      credentials: 'include'
+    }).then(res => {
+      return res.json()
+    }).then(res => {
+      if(!res.err){
+        this.props.onChangeUserLoginState(true);
+        Cookies.set('username', res.userData['username']);
+        Cookies.set('userId',res.userData['userId']);
+      }
+    })
     this.setState(() => {
       const pathname = this.props.location.pathname;
       return {
@@ -101,7 +119,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-
+    onChangeUserLoginState: (loginState) => dispatch(doChangeUserLoginState(loginState))
   }
 }
 
