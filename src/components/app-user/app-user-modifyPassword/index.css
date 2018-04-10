@@ -1,0 +1,24 @@
+.app-user-reset-password{
+  margin: 0 auto;
+  width: 368px;
+}
+
+.app-user-reset-password-captcha{
+  display: flex;
+  align-items: center;
+  height: 40px;
+  width: 100%;
+}
+
+.app-user-reset-password-submit-input{
+  width: 150px;
+  height: 40px;
+}
+
+.app-user-reset-password-hadMobileNumber{
+  float: right;
+  height: 40px;
+  line-height: 40px;
+  color: #1890ff;
+  cursor: pointer;
+}

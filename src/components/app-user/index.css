@@ -1,0 +1,40 @@
+
+
+.app-user{
+  padding: 112px 0 24px;
+  height: 100%;
+  background-color: #f0f2f5;
+  background-image: url('https://gw.alipayobjects.com/zos/rmsportal/TVYTbAXWheQpRcWDaDMu.svg');
+  background-repeat: no-repeat;
+  background-position: center 110px;
+  background-size: 100%;
+}
+
+.app-user .top{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.app-user .top-image{
+  width: 44px;
+  height: 44px;
+  margin-right: 16px;
+}
+
+.app-user .top-content{
+  font-size: 33px;
+  color: rgba(0,0,0,.85);
+  font-family: "Myriad Pro","Helvetica Neue",Arial,Helvetica,sans-serif;
+  font-weight: 600;
+  position: relative;
+  top: 2px;
+}
+
+.app-user .desc{
+  text-align: center;
+  font-size: 14px;
+  color: rgba(0,0,0,.45);
+  margin-top: 12px;
+  margin-bottom: 40px;
+}

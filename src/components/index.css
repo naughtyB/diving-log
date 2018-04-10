@@ -1,0 +1,77 @@
+@font-face {
+  font-family: 'iconfont';  /* project id 490574 */
+  src: url('//at.alicdn.com/t/font_490574_nipzvq5s10vpwrk9.eot');
+  src: url('//at.alicdn.com/t/font_490574_nipzvq5s10vpwrk9.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_490574_nipzvq5s10vpwrk9.woff') format('woff'),
+  url('//at.alicdn.com/t/font_490574_nipzvq5s10vpwrk9.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_490574_nipzvq5s10vpwrk9.svg#iconfont') format('svg');
+}
+
+/* 没用 */
+.anticon-menuTrigger:before{
+  font-family:iconfont !important;
+  content:"\e67b";
+}
+
+.anticon-equipment:before{
+  font-family:iconfont !important;
+  content:"\e61a"
+}
+
+.anticon-trip:before{
+  font-family:iconfont !important;
+  content:"\e616"
+}
+
+.anticon-course:before{
+  font-family:iconfont !important;
+  content:"\e613"
+}
+
+.anticon-practice:before{
+  font-family:iconfont !important;
+  content:"\e635"
+}
+
+.anticon-detail:before{
+  font-family:iconfont !important;
+  content:"\e649"
+}
+
+.anticon-appointment:before{
+  font-family:iconfont !important;
+  content:"\e6e2"
+}
+
+.anticon-captcha:before{
+  font-family:iconfont !important;
+  content:"\e609"
+}
+
+.anticon-line:before{
+  font-family:iconfont !important;
+  content:"\e773"
+}
+
+.anticon-securityAnswer:before{
+  font-family:iconfont !important;
+  content:"\e701"
+}
+
+.ant-layout-content,.ant-layout{
+  display: flex;
+  height: 100%;
+}
+
+.ant-layout-content{
+  flex: 1 1;
+  background-color: white;
+}
+
+.app-layout-header{
+  position: relative;
+  height: auto;
+  background-color: white;
+  box-shadow: 0 2px 8px #f0f1f2;
+  z-index: 10;
+}

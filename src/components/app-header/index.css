@@ -1,0 +1,11 @@
+.app-header-search{
+  border-left: 1px solid #ebedf0;
+}
+
+.app-header-search .ant-input{
+  border: none !important;
+  box-shadow: none !important;
+  height: 20px;
+  padding-top: 0;
+  padding-bottom: 0;
+}

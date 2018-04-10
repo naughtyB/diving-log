@@ -1,0 +1,16 @@
+.app-user-register{
+  margin: 0 auto;
+  width: 368px;
+}
+.app-user-register-submit-input{
+  width: 150px;
+  height: 40px;
+}
+
+.app-user-register-hadUsername{
+  float: right;
+  height: 40px;
+  line-height: 40px;
+  color: #1890ff;
+  cursor: pointer;
+}

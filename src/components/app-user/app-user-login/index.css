@@ -1,0 +1,26 @@
+.app-user-login{
+  margin: 0 auto;
+  width: 368px;
+}
+
+.app-user-login-username, .app-user-login-password{
+  height: 40px;
+}
+
+.app-user-login-forgetPassword{
+  float: right;
+  color: #1890ff;
+  cursor: pointer;
+}
+
+.app-user-login-submit{
+  margin-bottom: 15px;
+  width: 100%;
+  height: 40px;
+}
+
+.app-user-login-register{
+  float: right;
+  color: #1890ff;
+  cursor: pointer;
+}
