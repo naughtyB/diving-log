@@ -3,6 +3,7 @@ import { Form, Input, Button, Icon, message, Select } from 'antd';
 import { connect } from 'react-redux';
 import { doChangeUserResetPasswordFields, doSubmitResetPassword } from '../../../redux/action/user.js';
 import './index.css';
+import Cookies from 'js-cookie';
 const FormItem = Form.Item; 
 const Option = Select.Option;
 
@@ -31,6 +32,8 @@ export class AppHeaderUserResetPassword extends React.Component{
         value: undefined
       }
     })
+    Cookies.remove('username');
+    Cookies.remove('userId');
   }
   checkPassword(rule, value, callback){
     const form = this.props.form;

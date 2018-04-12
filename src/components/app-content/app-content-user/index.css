@@ -1,0 +1,25 @@
+.app-content-user{
+  display: flex;
+  padding: 40px 0 0;
+  height: 100%;
+  width: 100%;
+  background-color: #fff;
+}
+
+.app-content-user-menu{
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+.app-content-user-menu-each{
+  padding: 0 50px !important;
+}
+
+.app-content-user-introduce{
+  flex-grow: 1;
+  flex-shrink: 1;
+  height: 100%;
+  border-left-width: 1px;
+  border-left-style: solid;
+  border-left-color: rgb(233, 233, 233);
+}

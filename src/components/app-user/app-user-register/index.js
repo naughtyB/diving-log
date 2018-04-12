@@ -3,8 +3,10 @@ import { Form, Input, Icon, Button, message, Select } from 'antd';
 import { connect } from 'react-redux';
 import { doChangeUserRegisterFields, doSubmitRegister } from '../../../redux/action/user';
 import './index.css';
+import Cookies from 'js-cookie';
 const FormItem = Form.Item;
 const Option = Select.Option;
+
 
 export class AppUserRegister extends React.Component{
   constructor(props){
@@ -34,6 +36,8 @@ export class AppUserRegister extends React.Component{
         value: undefined
       }
     })
+    Cookies.remove('username');
+    Cookies.remove('userId');
   }
   checkConfirm(rule, value, callback){
     const form = this.props.form;

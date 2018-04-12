@@ -1,0 +1,33 @@
+
+
+.app-content-user-data-fields .dropbox {
+  width: 400px;
+  height: 180px;
+  line-height: 1.5;
+}
+
+.app-content-user-data-fields .ant-upload{
+  padding: 0;
+}
+
+.app-content-user-data-fields .ant-upload-drag-container{
+  transition: all 0.5s;
+}
+
+.app-content-user-data-fields .ant-upload-drag-container:hover{
+  background-color: rgba(250, 250, 250, 0.5)
+}
+
+.app-content-user-data-fields .upload-content{
+  transition: all 0.5s;
+}
+
+.app-content-user-data-fields .form-field{
+  margin: 24px 24px 0;
+  padding: 24px;
+  background-color:white; 
+}
+
+.app-content-user-data-fields .ant-upload.ant-upload-drag{
+  padding: 0 !important;
+}

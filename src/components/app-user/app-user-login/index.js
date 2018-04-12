@@ -3,6 +3,7 @@ import { Form, Input, Icon, Button, Checkbox, message } from 'antd';
 import { doChangeUserLoginFields, doSubmitLogin } from '../../../redux/action/user';
 import { connect } from 'react-redux';
 import './index.css';
+import Cookies from 'js-cookie';
 const FormItem = Form.Item;
 
 export class AppUserLogin extends React.Component{
@@ -19,6 +20,8 @@ export class AppUserLogin extends React.Component{
         value: ''
       }
     })
+    Cookies.remove('username');
+    Cookies.remove('userId');
   }
   handleSubmit(){
     this.props.form.validateFields(["username","password"],(errors,values)=>{

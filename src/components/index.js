@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import AppHeader from './app-header/index';
 import AppContent from './app-content/index';
 import AppUser from './app-user/index';
+import AppReply from './app-reply/index';
 import './index.css';
 const { Header, Content } = Layout;
 
@@ -33,6 +34,7 @@ class AppLayout extends React.Component {
                   </Header>
                   <Content style={{width: '100%'}}>
                     <AppContent/>
+                    <AppReply/>
                   </Content>
                 </Layout>
               )

@@ -12,8 +12,19 @@ export class AppHeader extends React.Component{
     super(props);
     this.handleLogin = this.handleLogin.bind(this);
     this.handleMenuSelect = this.handleMenuSelect.bind(this);
+    this.handleLogOff =this.handleLogOff.bind(this)
     this.state = {
       selectedKeys: []
+    }
+  }
+  handleLogOff(){
+    this.props.onChangeUserLoginState(false);
+    Cookies.remove('username');
+    Cookies.remove('userId')
+    if(/^\/user/.test(this.props.location.pathname) || /^\/releaseLog/.test(this.props.location.pathname)){
+      this.props.history.push({
+        pathname: '/logWorld'
+      })
     }
   }
   handleLogin(){
@@ -45,6 +56,7 @@ export class AppHeader extends React.Component{
     })
   }
   componentDidUpdate(preProps){
+    console.log(this.props.location.pathname)
     const pathname = this.props.location.pathname;
     if(pathname !== preProps.location.pathname && /^\/\S+$/g.test(pathname)){
       this.setState(() => {
@@ -60,7 +72,10 @@ export class AppHeader extends React.Component{
         selectedKeys: [key]
       }
     })
-    this.props.history.push({pathname: key})
+    this.props.history.push({
+      pathname: key,
+      hash: key='/releaseLog' ? 'type=add' : ''
+    })
   }
   render(){
     return (
@@ -94,10 +109,10 @@ export class AppHeader extends React.Component{
           this.props.loginState ? (
             [
               <div key="user" style={{height: '80px', lineHeight: '80px', marginRight: '5px'}}>
-                <Button type="primary" style={{height: '30px'}}>个人中心</Button>
+                <Button type="primary" style={{height: '30px'}} onClick={() => this.props.history.push({pathname: '/user'})}>个人中心</Button>
               </div>, 
               <div key="logOff" style={{height: '80px', lineHeight: '80px'}}>
-                <Button style={{height: '30px'}}>注销</Button>
+                <Button style={{height: '30px'}} onClick={this.handleLogOff}>注销</Button>
               </div>
             ]
           ) : (

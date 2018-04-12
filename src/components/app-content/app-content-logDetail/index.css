@@ -5,7 +5,7 @@
   border-radius: 50%;
 }
 
-.app-content-logDetail .isPraised:hover{
+.app-content-logDetail .isNotPraised:hover{
   background-color: rgba(250, 108, 141, 0.2)
 }
 
@@ -13,10 +13,37 @@
   color: #CCC;
 }
 
-.app-content-logDetail .isPraised:hover .anticon-heart{
+.app-content-logDetail .isNotPraised:hover .anticon-heart{
   color: rgb(250, 108, 141)
+}
+
+.app-content-logDetail .isPraised .anticon-heart{
+  color: rgb(250, 108, 141)
+}
+
+.app-content-logDetail .isNotStored .anticon-star{
+  color: #ccc;
+}
+
+.app-content-logDetail .isStored .anticon-star{
+  color: #ffe500;
 }
 
 .app-content-logDetail .reply:hover{
   background-color: rgba(34, 34, 34, 0.2)
+}
+
+.app-content-logDetail .delete:hover{
+  background-color: rgba(34, 34, 34, 0.2)
+}
+
+.app-content-logDetail-comment-content p{
+  margin-bottom: 0;
+  color: rgb(34, 34, 34);
+  font-size: 14px;
+  line-height: 19px;
+}
+
+.app-content-logDetail-comment-content img{
+  margin: 10px 0;
 }

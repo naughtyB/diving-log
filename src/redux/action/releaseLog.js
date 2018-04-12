@@ -16,6 +16,12 @@ export const ADD_LOG_RECEIVE_SUCCESS_POST = 'ADD_LOG_RECEIVE_SUCCESS_POST';
 
 export const ADD_LOG_RECEIVE_ERROR_POST = 'ADD_LOG_RECEIVE_ERROR_POST';
 
+export const MODIFY_LOG_REQUEST_POST = 'MODIFY_LOG_REQUEST_POST';
+
+export const MODIFY_LOG_RECEIVE_SUCCESS_POST = 'MODIFY_LOG_RECEIVE_SUCCESS_POST';
+
+export const MODIFY_LOG_RECEIVE_ERROR_POST = 'MODIFY_LOG_RECEIVE_ERROR_POST';
+
 export const doChangeMarker = (marker) => {
   return {
     type: CHANGE_MARKER,
@@ -92,6 +98,52 @@ export const doAddLog = (logData, successCallback, errorCallback, unloginCallbac
     }
     else{
       dispatch(doAddLogReceiveSuccessPost(res.detailData));
+      successCallback && successCallback();
+    }
+  })
+}
+
+export const doModifyLogRequestPost = () => {
+  return {
+    type: MODIFY_LOG_REQUEST_POST
+  }
+}
+
+export const doModifyLogReceiveSuccessPost = () => {
+  return {
+    type: MODIFY_LOG_RECEIVE_SUCCESS_POST
+  }
+}
+
+export const doModifyLogReceiveErrorPost = () => {
+  return {
+    type: MODIFY_LOG_RECEIVE_ERROR_POST
+  }
+}
+
+export const doModifyLog = (logData, successCallback, errorCallback, unloginCallback) => (dispatch) => {
+  dispatch(doModifyLogRequestPost());
+  return fetch('/server/log/modify', {
+    method: 'post',
+    headers:{
+      'Content-Type':'application/json'
+    },
+    body: logData,
+    credentials: 'include'
+  }).then(res => {
+    return res.json();
+  }).then(res => {
+    if(res.err){
+      dispatch(doModifyLogReceiveErrorPost())
+      if(res.err === 'unlogin'){
+        errorCallback && errorCallback()
+      }
+      else{
+        unloginCallback && unloginCallback()
+      }
+    }
+    else{
+      dispatch(doModifyLogReceiveSuccessPost(res.detailData));
       successCallback && successCallback();
     }
   })

@@ -2,6 +2,7 @@ import React from 'react';
 import AppContentLogWorld from './app-content-logWorld/index';
 import AppContentReleaseLog from './app-content-releaseLog/index';
 import AppContentLogDetail from './app-content-logDetail/index';
+import AppContentUser from './app-content-user/index';
 import { Route, Switch, Redirect } from "react-router-dom";
 
 export class AppContent extends React.Component{
@@ -38,8 +39,20 @@ export class AppContent extends React.Component{
             />
           }}
         />
+        <Route 
+          path="/user"
+          key="user"
+          render={({history,location}) => {
+            return <AppContentUser
+              history={history}
+              location={location}
+            />
+          }}
+        />
         <Redirect 
-          to="/logWorld"
+          to={{
+            pathname: '/logWorld'
+          }}
         />
       </Switch>
     )

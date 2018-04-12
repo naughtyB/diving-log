@@ -5,24 +5,36 @@ import AppContentReleaseLogFirstStep from './app-content-releaseLog-firstStep/in
 import AppContentReleaseLogSecondStep from './app-content-releaseLog-secondStep/index';
 import AppContentReleaseLogThirdStep from './app-content-releaseLog-thirdStep/index';
 import { doChangeUserLoginState } from '../../../redux/action/user'
-import { doChangeCenter, doChangeMarker, doChangeStep } from '../../../redux/action/releaseLog'
+import { doChangeCenter, doChangeMarker, doChangeStep, doChangeBasiCFields, doChangeDetailRecord } from '../../../redux/action/releaseLog'
+import { doGetLogDetail } from '../../../redux/action/logDetail'
 import './index.css';
 import Cookies from 'js-cookie'; 
 import fetch from 'isomorphic-fetch';
+import moment from 'moment';
 const Step = Steps.Step;
 
-const steps = [{
-  title: '选择潜水日志的定位',
-  content: <AppContentReleaseLogFirstStep/>
-}, {
-  title: '填写潜水日志基本信息',
-  content: <AppContentReleaseLogSecondStep/>
-}, {
-  title: '潜水日志详细记录',
-  content: <AppContentReleaseLogThirdStep/>
-}]
+let transformHash = (hash) => {
+  let hashData={};
+  hash.slice(1).split("&").forEach((item,index)=>{
+      let arr=item.split("=");
+      hashData[arr[0]]=decodeURIComponent(arr[1]);
+  });
+  return hashData;
+};
 
 export class AppContentReleaseLog extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      shouldModifyContent : false
+    }
+    this.onChangeShouldModifyContent = this.onChangeShouldModifyContent.bind(this);
+  }
+  onChangeShouldModifyContent(bool){
+    this.setState({
+      shouldModifyContent: bool
+    })
+  }
   componentWillMount(){
     if(!this.props.loginState){
       fetch('/server/autoLogin', {
@@ -47,21 +59,125 @@ export class AppContentReleaseLog extends React.Component{
         }
       })
     }
-    if(navigator.geolocation){
-      navigator.geolocation.getCurrentPosition((position) => {
+    this.props.onChangeStep(0);
+    let hash = transformHash(this.props.location.hash);
+    if(hash['type'] === 'add'){
+      this.props.onChangeBasiCFields({
+        date: {
+          value: null
+        },
+        title: {
+          value: ''
+        },
+        timeIn: {
+          value: null
+        },
+        timeOut: {
+          value: null
+        },
+        location: {
+          value: ''
+        },
+        diveSite: {
+          value: ''
+        },
+        start: {
+          value: ''
+        },
+        end: {
+          value: ''
+        },
+        visibility: {
+          value: ''
+        },
+        nitrox: {
+          value: ''
+        },
+        airTemperature: {
+          value: ''
+        },
+        bottomTemperature: {
+          value: ''
+        },
+        weight: {
+          value: ''
+        },
+        camera: {
+          value: ''
+        },
+        isSecret: {
+          value: ''
+        }
+      });
+      if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition((position) => {
+          this.props.onChangeCenter({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          })
+          this.props.onChangeMarker({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          })
+        })
+      }
+    }
+    else if(hash['type'] === 'modify'){
+      this.props.onGetLogDetail(hash['logId'], (logDetail) => {
+        let fields = {};
+        for (let [key, value] of Object.entries(logDetail)) {
+          if(key === 'timeIn' || key === 'timeOut'){
+            fields[key] = {
+              value: moment(value, 'HH:mm:ss')
+            }
+          }
+          else if(key === 'date'){
+            fields[key] = {
+              value: moment(value, 'YYYY-MM-DD')
+            }
+          }
+          else{
+            fields[key] = {
+              value: value
+            }
+          }
+        }
+        this.props.onChangeBasiCFields(fields);
         this.props.onChangeCenter({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        })
+          lat: Number(logDetail.marker.lat),
+          lng: Number(logDetail.marker.lng)
+        });
         this.props.onChangeMarker({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
+          lat: Number(logDetail.marker.lat),
+          lng: Number(logDetail.marker.lng)
+        });
+        this.props.onChangeDetailRecord(logDetail.detail)
+        this.setState({
+          shouldModifyContent: true
         })
+      }, () => {
+        message.info('error')
+      }, () => {
+        this.props.history.push({
+          pathname: '/login'
+        })
+        message.info('检测到您未登录  请先登录');
+        this.props.onChangeUserLoginState(false);
       })
     }
-    this.props.onChangeStep(0)
   }
   render() {
+    let type = transformHash(this.props.location.hash)['type'];
+    const steps = [{
+      title: type === 'add' ? '选择潜水日志的定位' : '修改潜水日志的定位',
+      content: <AppContentReleaseLogFirstStep/>
+    }, {
+      title: type === 'add' ? '填写潜水日志基本信息' : '修改潜水日志基本信息',
+      content: <AppContentReleaseLogSecondStep/>
+    }, {
+      title: type === 'add' ? '填写潜水日志详细记录' : '修改潜水日志详细记录',
+      content: <AppContentReleaseLogThirdStep onChangeShouldModifyContent={this.onChangeShouldModifyContent} shouldModifyContent = {this.state.shouldModifyContent}/>
+    }]
     return (
       <div className="app-content-releaseLog">
         <Steps current={this.props.step}>
@@ -83,9 +199,12 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onChangeUserLoginState: (loginState) => dispatch(doChangeUserLoginState(loginState)),
+    onChangeBasiCFields: (fieldsChanged) => dispatch(doChangeBasiCFields(fieldsChanged)),
     onChangeCenter: (center) => dispatch(doChangeCenter(center)),
     onChangeMarker: (marker) => dispatch(doChangeMarker(marker)),
-    onChangeStep: (step) => dispatch(doChangeStep(step))
+    onChangeStep: (step) => dispatch(doChangeStep(step)),
+    onGetLogDetail: (logId, successCallback, errorCallback, unloginCallback) => dispatch(doGetLogDetail(logId, successCallback, errorCallback, unloginCallback)),
+    onChangeDetailRecord: (detailRecord) => dispatch(doChangeDetailRecord(detailRecord))
   }
 }
 

@@ -1,12 +1,15 @@
 import React from 'react';
 import _ from 'lodash';
-import { message } from 'antd';
+import { message, Input } from 'antd';
 import { compose, withProps, lifecycle } from "recompose"
 import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-maps"
 import { SearchBox } from 'react-google-maps/lib/components/places/SearchBox';
 import { InfoBox } from "react-google-maps/lib/components/addons/InfoBox";
 import { MarkerClusterer } from 'react-google-maps/lib/components/addons/MarkerClusterer';
 import fetch from 'isomorphic-fetch'
+import Cookies from 'js-cookie';
+
+let userId = Cookies.get("userId")
 
 const MyMapComponent = compose(
   withProps({
@@ -126,8 +129,12 @@ const MyMapComponent = compose(
                 console.log(e)
               }}
               onMouseOut={()=>props.onMarkMouseOut()}
-              icon={{url: "http://localhost:8000/public/image/logPosition.png", size: {width: 35, height: 50}, scaledSize: {width: 35, height: 50}}}
+              icon={{url: logMarker.user._id === userId ? "http://localhost:8000/public/image/yellowFlag.png" : "http://localhost:8000/public/image/flag.png", size: {width: 35, height: 50}, scaledSize: {width: 35, height: 50}}}
               position={{ lat: Number(logMarker.marker.lat), lng: Number(logMarker.marker.lng) }}
+              onClick={()=>props.history.push({
+                pathname: '/logDetail',
+                hash: 'logId=' + logMarker._id
+              })}
             >
               {
                 props.visibleIndex === index && (
@@ -234,16 +241,20 @@ export class AppContentLogWorld extends React.Component{
 
   render(){
     return (
-      <MyMapComponent
-        onMarkMouseOver={this.onMarkMouseOver}
-        onMarkMouseOut={this.onMarkMouseOut}
-        visibleIndex={this.state.visibleIndex}
-        center={this.state.center}
-        onChangeParentState={this.onChangeParentState}
-        onMapClick={this.onMapClick}
-        logMarkers={this.state.logMarkers}
-        bounds={this.state.bounds}
-      />
+      <div style={{position: 'relative', width: '100%', height: '100%'}}>
+        <MyMapComponent
+          onMarkMouseOver={this.onMarkMouseOver}
+          onMarkMouseOut={this.onMarkMouseOut}
+          visibleIndex={this.state.visibleIndex}
+          center={this.state.center}
+          onChangeParentState={this.onChangeParentState}
+          onMapClick={this.onMapClick}
+          logMarkers={this.state.logMarkers}
+          bounds={this.state.bounds}
+          history={this.props.history}
+        />
+        <Input type="text" style={{width: '300px', position: 'absolute', top: '50px', left: '400px'}}/>
+      </div>
     )
   }
 }

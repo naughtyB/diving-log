@@ -6,13 +6,16 @@ import {
   CHANGE_DETAIL_RECORD,
   ADD_LOG_REQUEST_POST,
   ADD_LOG_RECEIVE_SUCCESS_POST,
-  ADD_LOG_RECEIVE_ERROR_POST
+  ADD_LOG_RECEIVE_ERROR_POST,
+  MODIFY_LOG_REQUEST_POST,
+  MODIFY_LOG_RECEIVE_SUCCESS_POST,
+  MODIFY_LOG_RECEIVE_ERROR_POST
 } from '../action/releaseLog'
 
 const initialReleaseLog = {
   markers: null,
   center: null,
-  step: 0,
+  step: 2,
   basicFields: {
     date: {
       value: null
@@ -61,7 +64,8 @@ const initialReleaseLog = {
     }
   },
   detailRecord: '',
-  isAddingLog: false
+  isAddingLog: false,
+  isModifyingLog: false
 }
 
 export const releaseLog = (state = initialReleaseLog, action) => {
@@ -82,6 +86,12 @@ export const releaseLog = (state = initialReleaseLog, action) => {
       return {...state, isAddingLog: false};
     case ADD_LOG_RECEIVE_ERROR_POST:
       return {...state, isAddingLog: false};
+    case MODIFY_LOG_REQUEST_POST:
+      return {...state, isModifyingLog: true};
+    case MODIFY_LOG_RECEIVE_SUCCESS_POST:
+      return {...state, isModifyingLog: false};
+    case MODIFY_LOG_RECEIVE_ERROR_POST:
+    return {...state, isModifyingLog: false};
     default:
       return state;
   }

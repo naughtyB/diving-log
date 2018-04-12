@@ -2,10 +2,19 @@ import React from 'react';
 import { Button, message } from 'antd';
 import BraftEditor from 'braft-editor';
 import { withRouter } from 'react-router-dom';
-import { doChangeDetailRecord, doChangeStep, doAddLog } from '../../../../redux/action/releaseLog';
+import { doChangeDetailRecord, doChangeStep, doAddLog, doModifyLog } from '../../../../redux/action/releaseLog';
 import { connect } from 'react-redux';
 import 'braft-editor/dist/braft.css';
 import './index.css';
+let transformHash = (hash) => {
+  let hashData={};
+  hash.slice(1).split("&").forEach((item,index)=>{
+      let arr=item.split("=");
+      hashData[arr[0]]=decodeURIComponent(arr[1]);
+  });
+  return hashData;
+};
+
 
 export class AppContentReleaseLogThirdStep extends React.Component{
   constructor(props){
@@ -16,6 +25,17 @@ export class AppContentReleaseLogThirdStep extends React.Component{
     this.handleChange = this.handleChange.bind(this);
     this.handleBack = this.handleBack.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+  componentDidMount(){
+    if(transformHash(this.props.location.hash)['type'] === 'add'){
+      this.editorInstance.setContent('', 'html')
+    }
+    if(transformHash(this.props.location.hash)['type'] === 'modify' && this.props.shouldModifyContent){
+      this.props.onChangeShouldModifyContent(false);
+      this.setState({
+        contentId: new Date().getTime()
+      })
+    }
   }
   handleChange(detailRecord){
     this.props.onChangeDetailRecord(detailRecord)
@@ -44,25 +64,45 @@ export class AppContentReleaseLogThirdStep extends React.Component{
       detail: this.props.detailRecord,
       marker: this.props.marker
     }
-    this.props.onAddLog(JSON.stringify(json), () => {
-      message.info('创建日志成功');
-      //wqdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-      this.props.history.push({
-        pathname: '/'
-      });
-    }, () => {
-      message.error('服务器发生错误 请重新提交')
-    }, () => {
-      message.warn('您未登录  请先登录')
-    })
+    let hash = transformHash(this.props.location.hash);
+    if(hash['type'] === 'add'){
+      this.props.onAddLog(JSON.stringify(json), () => {
+        message.info('创建日志成功');
+        //wqdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        this.props.history.push({
+          pathname: '/user/log'
+        });
+      }, () => {
+        message.error('服务器发生错误 请重新提交')
+      }, () => {
+        message.warn('您未登录  请先登录')
+      })
+    }
+    else if(hash['type'] === 'modify'){
+      this.props.onModifyLog(JSON.stringify({...json, logId: hash['logId']}),() => {
+        message.info('修改日志成功');
+        //wqdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        this.props.history.push({
+          pathname: '/user/log'
+        });
+      }, () => {
+        message.error('服务器发生错误 请重新提交')
+      }, () => {
+        message.warn('您未登录  请先登录')
+      })
+    }
   }
   render(){
+    let type = transformHash(this.props.location.hash)['type'];
     const editorProps = {
       height: 1000,
       contentId: this.state.contentId,
       contentFormat: 'html',
-      initialContent: '',
+      initialContent: this.props.detailRecord,
       onChange: this.handleChange,
+      controls: [
+        'undo', 'redo', 'split','text-color', 'bold', 'italic', 'underline', 'emoji', 'media', 'clear'
+      ],
       media: {
         video: false,
         audio: false,
@@ -109,11 +149,11 @@ export class AppContentReleaseLogThirdStep extends React.Component{
     return (
       <div>
         <div className="app-content-releaseLog-thirdStep-content">
-          <BraftEditor {...editorProps}/>
+          <BraftEditor {...editorProps} ref={instance => this.editorInstance = instance}/>
         </div>
         <div className="app-content-releaseLog-thirdStep-action">
           <Button type="primary" onClick={this.handleBack} style={{marginRight: '10px'}}>上一步</Button>
-          <Button type="primary" onClick={this.handleSubmit} loading={this.props.isAddingLog}>创建</Button>
+          <Button type="primary" onClick={this.handleSubmit} loading={this.props.isAddingLog}>{type === 'add' ? '创建' : '修改'}</Button>
         </div>
       </div> 
     )
@@ -133,7 +173,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onChangeDetailRecord: (detailRecord) => dispatch(doChangeDetailRecord(detailRecord)),
     onChangeStep: (step) => dispatch(doChangeStep(step)),
-    onAddLog: (logData, successCallback, errorCallback, unloginCallback) => dispatch(doAddLog(logData, successCallback, errorCallback, unloginCallback))
+    onAddLog: (logData, successCallback, errorCallback, unloginCallback) => dispatch(doAddLog(logData, successCallback, errorCallback, unloginCallback)),
+    onModifyLog: (logData, successCallback, errorCallback, unloginCallback) => dispatch(doModifyLog(logData, successCallback, errorCallback, unloginCallback))
   }
 }
 
