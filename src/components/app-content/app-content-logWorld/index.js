@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import { message, Input } from 'antd';
+import { message, Input, Select } from 'antd';
 import { compose, withProps, lifecycle } from "recompose"
 import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-maps"
 import { SearchBox } from 'react-google-maps/lib/components/places/SearchBox';
@@ -8,6 +8,8 @@ import { InfoBox } from "react-google-maps/lib/components/addons/InfoBox";
 import { MarkerClusterer } from 'react-google-maps/lib/components/addons/MarkerClusterer';
 import fetch from 'isomorphic-fetch'
 import Cookies from 'js-cookie';
+const Option = Select.Option;
+
 
 let userId = Cookies.get("userId")
 
@@ -97,7 +99,7 @@ const MyMapComponent = compose(
         >
           <input
             type="text"
-            placeholder="Customized your placeholder"
+            placeholder="输入您想查找的地方"
             style={{
               boxSizing: `border-box`,
               border: `1px solid transparent`,
@@ -179,7 +181,8 @@ export class AppContentLogWorld extends React.Component{
       },
       logMarkers: [],
       bounds: null,
-      visibleIndex: -1
+      visibleIndex: -1,
+      check: 'all'
     }
     this.onMarkMouseOver = this.onMarkMouseOver.bind(this);
     this.onChangeParentState = this.onChangeParentState.bind(this);
@@ -253,7 +256,11 @@ export class AppContentLogWorld extends React.Component{
           bounds={this.state.bounds}
           history={this.props.history}
         />
-        <Input type="text" style={{width: '300px', position: 'absolute', top: '50px', left: '400px'}}/>
+        <Select value={this.state.check} onChange={(value) => {this.setState({check: value})}} style={{width: '300px', position: 'absolute', top: '11px', left: '370px'}}>
+          <Option value="all">查看所有人的潜水日志</Option>
+          <Option value="own">只看自己的潜水日志</Option>
+          <Option value="other">只看其他人的潜水日志</Option>
+        </Select>
       </div>
     )
   }
