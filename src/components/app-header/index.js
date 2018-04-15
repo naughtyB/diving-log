@@ -67,6 +67,7 @@ export class AppHeader extends React.Component{
     }
   }
   handleMenuSelect({item, key, selectedKeys}){
+    console.log(key)
     this.setState(() => {
       return {
         selectedKeys: [key]
@@ -74,7 +75,7 @@ export class AppHeader extends React.Component{
     })
     this.props.history.push({
       pathname: key,
-      hash: key='/releaseLog' ? 'type=add' : ''
+      hash: key === '/releaseLog' ? 'type=add' : ''
     })
   }
   render(){

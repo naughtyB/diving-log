@@ -15,6 +15,15 @@ const formItemLayout = {
   },
 };
 
+let transformHash = (hash) => {
+  let hashData={};
+  hash.slice(1).split("&").forEach((item,index)=>{
+      let arr=item.split("=");
+      hashData[arr[0]]=decodeURIComponent(arr[1]);
+  });
+  return hashData;
+};
+
 const FormItem = Form.Item;
 
 export class AppContentReleaseLogSecondStep extends React.Component{
@@ -34,6 +43,7 @@ export class AppContentReleaseLogSecondStep extends React.Component{
     })
   }
   render(){
+    let type = this.props.location ? transformHash(this.props.location.hash)['type'] : '';
     const form = this.props.form;
     const { getFieldDecorator } = form;
     return(
@@ -231,9 +241,14 @@ export class AppContentReleaseLogSecondStep extends React.Component{
             </Row>
           </Form>
         </div>
-        <div className="app-content-releaseLog-secondStep-action" style={{textAlign: 'right'}}>
-          <Button type="primary" onClick={this.handleBack} style={{marginRight: '10px'}}>上一步</Button>
-          <Button type="primary" onClick={this.handleNext}>下一步</Button>
+        <div className="app-content-releaseLog-secondStep-action"  style={{display: 'flex', justifyContent: 'space-between'}}>
+          <div>
+            <Button type="primary" style={{display: type === 'add' ? 'none' : 'block'}} onClick={()=>{this.props.history.push({pathname:'/releaseLog', hash: 'type=add'})}}>重新创建</Button>
+          </div>
+          <div style={{textAlign: 'right'}}>
+            <Button type="primary" onClick={this.handleBack} style={{marginRight: '10px'}}>上一步</Button>
+            <Button type="primary" onClick={this.handleNext}>下一步</Button>
+          </div>
         </div>
       </div>
     )

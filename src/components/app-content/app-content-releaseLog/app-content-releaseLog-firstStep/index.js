@@ -8,6 +8,15 @@ import { connect } from 'react-redux';
 import { doChangeCenter, doChangeMarker, doChangeStep } from '../../../../redux/action/releaseLog'
 import './index.css';
 
+let transformHash = (hash) => {
+  let hashData={};
+  hash.slice(1).split("&").forEach((item,index)=>{
+      let arr=item.split("=");
+      hashData[arr[0]]=decodeURIComponent(arr[1]);
+  });
+  return hashData;
+};
+
 const MyMapComponent = compose(
   withProps({
     googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyCW9nrGGirQ6w0pTBbRKcWioe6-zXZOCYM&v=3.exp&libraries=geometry,drawing,places",
@@ -144,6 +153,7 @@ export class AppContentReleaseLogFirstStep extends React.Component{
   }
 
   render(){
+    let type = this.props.location ? transformHash(this.props.location.hash)['type'] : '';
     return (
       <div className="app-content-releaseLog-firstStep-content">
         <MyMapComponent
@@ -155,8 +165,13 @@ export class AppContentReleaseLogFirstStep extends React.Component{
           onChangeMarker={this.props.onChangeMarker}
           marker={this.props.marker}
         />
-        <div className="app-content-releaseLog-firstStep-content-action" style={{textAlign: 'right'}}>
-          <Button type="primary" onClick={this.handleNext}>下一步</Button>
+        <div className="app-content-releaseLog-firstStep-content-action" style={{display: 'flex', justifyContent: 'space-between'}}>
+          <div>
+            <Button type="primary" style={{display: type === 'add' ? 'none' : 'block'}} onClick={()=>{this.props.history.push({pathname:'/releaseLog', hash: 'type=add'})}}>创建</Button>
+          </div>
+          <div>
+            <Button type="primary" onClick={this.handleNext}>下一步</Button>
+          </div>
         </div>
       </div>
     )

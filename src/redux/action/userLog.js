@@ -16,10 +16,11 @@ export const doGetUserLogRequestPost = () => {
   }
 }
 
-export const doGetUserLogReceiveSuccessPost = (userLog) => {
+export const doGetUserLogReceiveSuccessPost = (userLog, userCreateTime) => {
   return {
     type: GET_USER_LOG_RECEIVE_SUCCESS_POST,
-    userLog
+    userLog,
+    userCreateTime
   }
 }
 
@@ -50,7 +51,7 @@ export const doGetUserLog = (successCallback, errorCallback, unloginCallback) =>
       }
     }
     else{
-      dispatch(doGetUserLogReceiveSuccessPost(res.userLog));
+      dispatch(doGetUserLogReceiveSuccessPost(res.userLog, res.userCreateTime));
       successCallback && successCallback();
     }
   })

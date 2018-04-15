@@ -58,6 +58,11 @@ export class AppContentLog extends React.Component{
       <Spin spinning={this.props.isGettingUserLog}>
         <h2 style={{lineHeight: '60px', marginLeft: '66px', marginBottom: '20px'}}>日志历程</h2>
         <Timeline style={{padding: '0 66px 0'}} >
+          <Timeline.Item>
+            <Tooltip title="点击创建潜水日志">
+              <span style={{color: '#1890ff', cursor: 'pointer'}} onClick={()=>this.props.history.push({pathname: '/releaseLog', hash: 'type=add'})}>创建日志</span>
+            </Tooltip>
+          </Timeline.Item>
           {this.props.userLog.length > 0 ? this.props.userLog.sort((a,b) => {
             return Number(moment(b.date, 'YYYY-MM-DD').format('x')) - Number(moment(a.date, 'YYYY-MM-DD').format('x'))
           }).map((item, index) => {
@@ -69,16 +74,21 @@ export class AppContentLog extends React.Component{
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <span style={{fontSize: '15px'}}>{item.date}</span>
                 &nbsp;&nbsp;
-                <Icon type="edit" style={{cursor: 'pointer'}} onClick={()=>this.handleEditLog(item._id)}/>
+                <Tooltip title="编辑">
+                  <Icon type="edit" style={{cursor: 'pointer'}} onClick={()=>this.handleEditLog(item._id)}/>
+                </Tooltip>
                 &nbsp;&nbsp;
-                <Icon type="delete" style={{cursor: 'pointer'}} onClick={() => this.handleDeleteLog(item._id)}/>
+                <Tooltip title="删除"> 
+                  <Icon type="delete" style={{cursor: 'pointer'}} onClick={() => this.handleDeleteLog(item._id)}/>
+                </Tooltip>
               </Timeline.Item>
             )
           }) : ''}
           {
-            this.props.userLog.length > 0 ? (
+            this.props.userCreateTime ? (
               <Timeline.Item color="green">
-                {moment(this.props.userLog[0]['user'].createTime, 'x').format('YYYY-MM-DD')}加入了 Let's Diving
+                加入了 Let's Diving &nbsp;&nbsp;&nbsp;&nbsp;
+                <span style={{fontSize: '15px'}}>{moment(this.props.userCreateTime, 'x').format('YYYY-MM-DD')}</span>
               </Timeline.Item>
             ) : ''
           }
@@ -91,7 +101,8 @@ export class AppContentLog extends React.Component{
 const mapStateToProps = (state) => {
   return {
     isGettingUserLog: state.userLog.isGettingUserLog,
-    userLog: state.userLog.userLog
+    userLog: state.userLog.userLog,
+    userCreateTime: state.userLog.userCreateTime
   }
 }
 

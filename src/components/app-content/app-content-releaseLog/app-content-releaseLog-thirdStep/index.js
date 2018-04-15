@@ -93,7 +93,7 @@ export class AppContentReleaseLogThirdStep extends React.Component{
     }
   }
   render(){
-    let type = transformHash(this.props.location.hash)['type'];
+    let type = this.props.location ? transformHash(this.props.location.hash)['type'] : '';
     const editorProps = {
       height: 1000,
       contentId: this.state.contentId,
@@ -151,9 +151,14 @@ export class AppContentReleaseLogThirdStep extends React.Component{
         <div className="app-content-releaseLog-thirdStep-content">
           <BraftEditor {...editorProps} ref={instance => this.editorInstance = instance}/>
         </div>
-        <div className="app-content-releaseLog-thirdStep-action">
-          <Button type="primary" onClick={this.handleBack} style={{marginRight: '10px'}}>上一步</Button>
-          <Button type="primary" onClick={this.handleSubmit} loading={this.props.isAddingLog}>{type === 'add' ? '创建' : '修改'}</Button>
+        <div className="app-content-releaseLog-thirdStep-action" style={{display: 'flex', justifyContent: 'space-between'}}>
+          <div>
+            <Button type="primary" style={{display: type === 'add' ? 'none' : 'block'}} onClick={()=>{this.props.history.push({pathname:'/releaseLog', hash: 'type=add'})}}>重新创建</Button>
+          </div>
+          <div style={{textAlign: 'right'}}>
+            <Button type="primary" onClick={this.handleBack} style={{marginRight: '10px'}}>上一步</Button>
+            <Button type="primary" onClick={this.handleSubmit} loading={this.props.isAddingLog}>{type === 'add' ? '创建' : '修改'}</Button>
+          </div>
         </div>
       </div> 
     )

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import AppContentUserData from './app-content-userData/index';
 import AppContentUserLog from './app-content-log/index';
+import AppContentUserStore from './app-content-store/index';
 import './index.css'
 
 
@@ -54,6 +55,9 @@ export class AppContentUser extends React.Component{
             <Menu.Item key="log" className="app-content-user-menu-each">
               我的日志
             </Menu.Item>
+            <Menu.Item key="store" className="app-content-user-menu-each">
+              我的收藏
+            </Menu.Item>
           </Menu>
         </div>
         <div className="app-content-user-introduce">
@@ -73,6 +77,16 @@ export class AppContentUser extends React.Component{
               key="log"
               render={({history,location}) => {
                 return <AppContentUserLog
+                  history={history}
+                  location={location}
+                />
+              }}
+            />
+            <Route 
+              exact path="/user/store"
+              key="log"
+              render={({history,location}) => {
+                return <AppContentUserStore
                   history={history}
                   location={location}
                 />

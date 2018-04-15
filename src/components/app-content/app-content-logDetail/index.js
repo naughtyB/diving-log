@@ -58,7 +58,16 @@ export class AppContentLogDetail extends React.Component{
           isLogStored: false
         }
       })
-      message.info("取消收藏成功")
+      let hash = transformHash(this.props.location.hash);
+      message.info("取消收藏成功");
+      this.props.onGetLogDetail(hash['logId'], () => {
+        this.setState({
+          praise: [],
+          delete: [],
+          isLogPraised: false,
+          isLogStored: false
+        })
+      })
     },()=>{
       message.info('收藏失败')
     },()=>{

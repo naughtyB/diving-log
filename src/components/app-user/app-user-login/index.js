@@ -64,9 +64,7 @@ export class AppUserLogin extends React.Component{
           {getFieldDecorator('autoLogin', {
             valuePropName: 'checked',
             initialValue: true,
-          })(
-            <Checkbox>自动登录</Checkbox>
-          )}
+          })(<span></span>)}
           <span className="app-user-login-forgetPassword" onClick={()=>this.props.history.push({pathname: '/resetPassword'})}>忘记密码</span>
         </FormItem>
         <Button

@@ -8,6 +8,7 @@ import { InfoBox } from "react-google-maps/lib/components/addons/InfoBox";
 import { MarkerClusterer } from 'react-google-maps/lib/components/addons/MarkerClusterer';
 import fetch from 'isomorphic-fetch'
 import Cookies from 'js-cookie';
+import { connect } from 'react-redux';
 const Option = Select.Option;
 
 
@@ -123,7 +124,17 @@ const MyMapComponent = compose(
           enableRetinaIcons
           gridSize={60}
         >
-          {props.logMarkers.length > 0 && props.logMarkers.map((logMarker, index) => (
+          {props.logMarkers.length > 0 && props.logMarkers.filter((item, index) => {
+            if(props.check === 'all'){
+              return true;
+            }
+            else if(props.check === 'other'){
+              return item.user._id !== userId;
+            }
+            else if(props.check === 'own'){
+              return item.user._id === userId;
+            }
+          }).map((logMarker, index) => (
             <Marker
               key={index}
               onMouseOver={(e)=>{
@@ -194,6 +205,14 @@ export class AppContentLogWorld extends React.Component{
     this.setState(state)
   }
 
+  componentWillUpdate(nextProps){
+    if(this.props.loginState !== nextProps.loginState && !nextProps.loginState){
+      this.setState({
+        check: 'all'
+      })
+    }
+  }
+
   componentWillMount() {
     console.log(2)
     if(navigator.geolocation){
@@ -255,8 +274,16 @@ export class AppContentLogWorld extends React.Component{
           logMarkers={this.state.logMarkers}
           bounds={this.state.bounds}
           history={this.props.history}
+          check={this.state.check}
         />
-        <Select value={this.state.check} onChange={(value) => {this.setState({check: value})}} style={{width: '300px', position: 'absolute', top: '11px', left: '370px'}}>
+        <Select value={this.state.check} onChange={(value) => {
+          if(!this.props.loginState){
+            message.warning("检测到您未登录，筛选失败，请先登录")
+          }
+          else{
+            this.setState({check: value})
+          }
+        }} style={{width: '300px', position: 'absolute', top: '11px', left: '370px'}}>
           <Option value="all">查看所有人的潜水日志</Option>
           <Option value="own">只看自己的潜水日志</Option>
           <Option value="other">只看其他人的潜水日志</Option>
@@ -266,4 +293,10 @@ export class AppContentLogWorld extends React.Component{
   }
 }
 
-export default AppContentLogWorld;
+const mapStateToProps = (state) => {
+  return {
+    loginState: state.user.loginState
+  }
+}
+
+export default connect(mapStateToProps)(AppContentLogWorld)

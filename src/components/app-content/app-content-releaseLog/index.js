@@ -166,17 +166,82 @@ export class AppContentReleaseLog extends React.Component{
       })
     }
   }
+  componentWillUpdate(nextProps){
+    let hash = transformHash(this.props.location.hash);
+    if(this.props.location && transformHash(this.props.location.hash)['type'] !== 'add' && transformHash(nextProps.location.hash)['type'] === 'add'){
+      this.props.onChangeStep(0);
+      this.props.onChangeBasiCFields({
+        date: {
+          value: null
+        },
+        title: {
+          value: ''
+        },
+        timeIn: {
+          value: null
+        },
+        timeOut: {
+          value: null
+        },
+        location: {
+          value: ''
+        },
+        diveSite: {
+          value: ''
+        },
+        start: {
+          value: ''
+        },
+        end: {
+          value: ''
+        },
+        visibility: {
+          value: ''
+        },
+        nitrox: {
+          value: ''
+        },
+        airTemperature: {
+          value: ''
+        },
+        bottomTemperature: {
+          value: ''
+        },
+        weight: {
+          value: ''
+        },
+        camera: {
+          value: ''
+        },
+        isSecret: {
+          value: ''
+        }
+      });
+      if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition((position) => {
+          this.props.onChangeCenter({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          })
+          this.props.onChangeMarker({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          })
+        })
+      }
+    }
+  }
   render() {
     let type = transformHash(this.props.location.hash)['type'];
     const steps = [{
       title: type === 'add' ? '选择潜水日志的定位' : '修改潜水日志的定位',
-      content: <AppContentReleaseLogFirstStep/>
+      content: <AppContentReleaseLogFirstStep history={this.props.history} location = {this.props.location}/>
     }, {
       title: type === 'add' ? '填写潜水日志基本信息' : '修改潜水日志基本信息',
-      content: <AppContentReleaseLogSecondStep/>
+      content: <AppContentReleaseLogSecondStep history={this.props.history} location = {this.props.location}/>
     }, {
       title: type === 'add' ? '填写潜水日志详细记录' : '修改潜水日志详细记录',
-      content: <AppContentReleaseLogThirdStep onChangeShouldModifyContent={this.onChangeShouldModifyContent} shouldModifyContent = {this.state.shouldModifyContent}/>
+      content: <AppContentReleaseLogThirdStep history={this.props.history} location = {this.props.location} onChangeShouldModifyContent={this.onChangeShouldModifyContent} shouldModifyContent = {this.state.shouldModifyContent}/>
     }]
     return (
       <div className="app-content-releaseLog">
